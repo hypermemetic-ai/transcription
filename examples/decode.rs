@@ -43,8 +43,12 @@ fn main() -> anyhow::Result<()> {
         }
         let t = Instant::now();
         let ps = sess.accept(c);
-        busy += t.elapsed();
-        let at = ((i + 1) * per) as f64 / 16_000.0;
+        let took = t.elapsed();
+        busy += took;
+        if took > Duration::from_millis(100) {
+            println!("  slow accept #{i} at {:.2}s audio: {took:?}", ((i + 1) * per) as f64 / 16_000.0);
+        }
+        let at = if realtime { start.elapsed().as_secs_f64() } else { ((i + 1) * per) as f64 / 16_000.0 };
         for p in &ps {
             if first_partial.is_none() && matches!(p, Piece::Partial { .. }) {
                 first_partial = Some(at);
@@ -56,6 +60,7 @@ fn main() -> anyhow::Result<()> {
     for p in sess.finish() {
         show(&p, audio_s);
     }
+    println!("  finish: {:?}", t.elapsed());
     busy += t.elapsed();
     println!("model={id} threads={} load={load:?} audio={audio_s:.2}s decode={:.3}s rtf={:.3}", s.threads, busy.as_secs_f64(), busy.as_secs_f64() / audio_s);
     Ok(())
