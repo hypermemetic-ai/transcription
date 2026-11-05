@@ -1,0 +1,51 @@
+[workspace]
+members = [".", "server", "overlay/plexus-login"]
+
+[package]
+name = "transcription"
+version = "0.1.0"
+edition = "2021"
+description = "Live audio to text with local models, as Plexus activations a service registers: listen (Input<Bytes> in, partial and final text out) and models list/search/download/config"
+license = "MIT"
+publish = false
+
+[dependencies]
+# The plexus 0.8 line (unpublished): the sibling checkouts on main, by path.
+plexus-core = { path = "../plexus-core" }
+plexus-macros = { path = "../plexus-macros" }
+plexus-client = { path = "../plexus-macros/plexus-client" }
+
+# The engine: sherpa-onnx's own Rust API (k2-fsa), its prebuilt static
+# libraries (onnxruntime inside) — no cmake, CPU.
+sherpa-onnx = "2.0.1"
+# Any rate in, 16 kHz out.
+rubato = "0.16"
+
+# The activation macro's expansion names these directly.
+jsonrpsee = { version = "0.26", features = ["server", "macros"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+async-stream = "0.3"
+async-trait = "0.1"
+bytes = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+schemars = { version = "1", features = ["derive"] }
+toml = "0.8"
+anyhow = "1"
+tracing = "0.1"
+
+# models download: HTTP with Range resume, sha256, .tar.bz2.
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream", "json"] }
+sha2 = "0.10"
+hex = "0.4"
+bzip2 = "0.4"
+tar = "0.4"
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+debug = 1
