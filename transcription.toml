@@ -1,0 +1,30 @@
+# transcription.toml — what `models config --config @transcription.toml` sets.
+# Every key is optional; a key not listed here is refused, named.
+
+# The model `listen` runs with no --model.
+default_model = "nemotron-en-560ms"
+
+# Threads one decode uses.
+threads = 2
+
+# Decodes running at once across all listeners; past it a listener waits
+# (its audio waits in the client, under credit — nothing is dropped).
+decode_workers = 8
+
+# Offline models: re-decode the open utterance for a partial every this
+# many ms of new audio (0: finals only).
+partial_ms = 700
+
+[vad]
+threshold = 0.5        # speech probability, 0..1
+min_silence_ms = 400   # silence that ends an utterance
+min_speech_ms = 150    # shorter is not an utterance
+max_speech_s = 20      # longer is cut
+
+# Per-model overrides.
+[models.parakeet-tdt-v2]
+partial_ms = 800
+
+[models.nemotron-en-560ms]
+threads = 2
+final_tail_ms = 1200   # silence fed to flush the look-ahead at an utterance end
