@@ -94,10 +94,16 @@ synapse -P 4480 transcription models search --query parakeet
 synapse -P 4480 transcription models download --id nemotron-en-560ms      # progress streams
 synapse -P 4480 transcription models config --config @transcription.toml
 pw-record --format s16 --rate 16000 --channels 1 - \
-  | synapse -P 4480 transcription speech listen --model nemotron-en-560ms --input - --chunk 640
-# {"type":"partial","text":"So the plan for"}
-# {"type":"final","text":"So the plan for today is the kiln","start_ms":74,"end_ms":3664}
+  | synapse -P 4480 -j transcription speech listen --model nemotron-en-560ms --input - --chunk 640
+# {"type":"partial","text":"So the plan"}                                   (each line's "content")
+# {"type":"final","text":"So the plan for today is the kill","start_ms":1642,"end_ms":5264}
 ```
+
+Run here, 2026-11-04, live: `pw-record` captured a PipeWire sink while the
+test clip played into it in real time (this machine has no microphone, so
+`--target auto_null --properties '{ stream.capture.sink = true }'` stood in
+for the default source). The first partial came 0.9 s after speech began,
+each final 0.7–0.85 s after its utterance ended.
 
 `synapse` here is one with `--input` (4.0.0 and later; on this machine
 `~/.local/bin/synapse-4.0.0-input`). `--input -` streams stdin as binary
@@ -275,4 +281,26 @@ synthetic speech (espeak-ng), `server/tests/fixtures/README.md`.
 | `access` | no role → `forbidden` on every method; `transcriber` → listen, list, search served, download and config forbidden; admin served; the roles declared |
 | `config` | an unknown key (top, `[vad]`, `[models.X]`), an unknown model, a value out of range — each refused naming it, the old config kept on disk and live; a good one kept, applied to the next listen, read back at start |
 | `download` | against a local HTTP fixture: VAD first, the model cut halfway → error saying resume; the next call resumes with `Range`, verifies sha256, extracts, installs; a third says installed; a bad sha256 refused and the partial removed |
-| `concurrency` | 8 listeners at once, each model: all finish, all within the WER bound, RSS growth bounded |
+| `access` (host) | `TranscriptionActivation` on another service: roles `transcription.listen`, `transcription.models.{list,search}`; the child routed |
+| `concurrency` | 8 listeners at once, each model: all finish, all within the WER bound, RSS under 100 MiB a listener |
+
+## Perf
+
+Ryzen 9 5900X (12 cores, 24 threads), CPU only, `threads = 2` per decode,
+`decode_workers = 12` (the defaults), the 13.9 s test clip, 2026-11-04;
+`server/tests/perf.rs`. The machine was shared (another process held a core
+throughout). "Live" sends 20 ms frames on a clock, as a microphone would.
+
+| model | load | RSS loaded | RTF, one listener flat out | first partial, live | end of utterance → final, live (1 listener) | live listeners kept up (finals within ~1.5 s) | WER on the clip |
+| -- | -- | -- | -- | -- | -- | -- | -- |
+| nemotron-en-560ms | 1.9 s | 880–940 MiB | 0.24 | 1.8 s after speech begins | 0.65 s | 12 (within 1.6 s; 16 within 2.3 s; 24 falls behind) | 0.115 |
+| parakeet-tdt-v2 | 1.4 s | 850 MiB | 0.12 (with partials every 700 ms) | 0.97 s | 0.71 s | 8 (16 within 2.4 s, 24 within 3.6 s; 32 falls behind) | 0.000 |
+| moonshine-tiny-en | 0.4 s | 126 MiB | 0.023 | 0.9 s | 0.43 s | 48+ (finals within 2 s at 48) | 0.115 |
+| zipformer-en-20m | 0.4 s | 59 MiB | 0.026 | — | 0.42 s | 48+ | 0.69 (misses the first 7 s of synthetic speech) |
+
+- RTF per decode call, engine alone (`examples/decode.rs`): Nemotron 0.19–0.30
+  at 2 threads, 0.13 at 4; Parakeet 0.04 for a whole utterance at 4 threads.
+- Memory per listener: 33 MiB (Nemotron), 41 MiB (Parakeet) — eight
+  listeners share one model.
+- Nemotron with `threads = 1, decode_workers = 22` kept up with the same 12–16:
+  the bound is the cores.

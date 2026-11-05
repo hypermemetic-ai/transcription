@@ -51,3 +51,27 @@ async fn the_roles_are_declared_for_the_gate() {
     assert_eq!(t, ["models.list", "models.search", "speech.listen"], "{roles:?}");
     s.stop().await;
 }
+
+/// A host service registers the one activation beside its own: `listen` and
+/// its `models` child under `transcription`, the roles qualified by path.
+#[tokio::test(flavor = "multi_thread")]
+async fn a_host_registers_the_activation_with_its_roles() {
+    use futures::StreamExt;
+    use plexus_core::plexus::DynamicHub as DynamicService;
+    let dir = tempfile::tempdir().unwrap();
+    let t = transcription::Transcription::open(transcription::Options {
+        models_dir: dir.path().join("models"),
+        config_path: None,
+        catalog: transcription::Catalog::new(None).unwrap(),
+        mirror: None,
+        release_api: None,
+    })
+    .unwrap();
+    let host = DynamicService::new("myapp").register(transcription::TranscriptionActivation::new(t));
+    let mut roles = host.declared_roles().remove(transcription::ROLE).unwrap();
+    roles.sort();
+    assert_eq!(roles, ["transcription.listen", "transcription.models.list", "transcription.models.search"]);
+    let items: Vec<_> = host.route("transcription.models.list", serde_json::json!({}), None).await.unwrap().collect().await;
+    let text = serde_json::to_string(&items).unwrap();
+    assert!(text.contains("nemotron-en-560ms") && text.contains("parakeet-tdt-v2"), "{text}");
+}
