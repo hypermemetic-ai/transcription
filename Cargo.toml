@@ -2,12 +2,14 @@
 members = [".", "server"]
 
 [package]
-name = "transcription"
+name = "plexus-transcription"
 version = "0.1.0"
 edition = "2021"
 description = "Live audio to text with local models, as Plexus activations a service registers: listen (Input<Bytes> in, partial and final text out) and models list/search/download/config"
 license = "MIT"
-publish = false
+repository = "https://github.com/hypermemetic-ai/transcription"
+keywords = ["plexus", "speech", "transcription", "asr", "rpc"]
+categories = ["multimedia::audio"]
 
 [dependencies]
 # The plexus 0.8 line, by published version.
