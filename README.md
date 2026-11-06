@@ -227,11 +227,12 @@ models directory and never committed.
 ## A host service: the library
 
 The activations are a library a service registers beside its own, behind
-its own gate and login (TRANSCRIBE-2's addition for plexus-ui):
+its own gate and login (TRANSCRIBE-2's addition for plexus-ui). It is `plexus-transcription` on crates.io
+(`cargo add plexus-transcription`; TRANSCRIBE-6):
 
 ```rust
 use plexus_core::plexus::DynamicHub as DynamicService;
-use transcription::{Options, Transcription, TranscriptionActivation, ROLE};
+use plexus_transcription::{Options, Transcription, TranscriptionActivation, ROLE};
 
 let t = Transcription::open(Options::default_dirs()?)?;   // or Options { models_dir, config_path, catalog, mirror, release_api }
 let service = DynamicService::new("myapp")

@@ -6,9 +6,9 @@
 
 use std::time::{Duration, Instant};
 
-use transcription::catalog::{Catalog, VAD_ID};
-use transcription::config::Config;
-use transcription::engine::{self, Load, Piece};
+use plexus_transcription::catalog::{Catalog, VAD_ID};
+use plexus_transcription::config::Config;
+use plexus_transcription::engine::{self, Load, Piece};
 
 fn main() -> anyhow::Result<()> {
     let a: Vec<String> = std::env::args().collect();

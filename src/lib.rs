@@ -7,7 +7,7 @@
 //!
 //! ```no_run
 //! use plexus_core::plexus::DynamicHub as DynamicService;
-//! use transcription::{Options, Transcription, TranscriptionActivation};
+//! use plexus_transcription::{Options, Transcription, TranscriptionActivation};
 //!
 //! # fn main() -> anyhow::Result<()> {
 //! let t = Transcription::open(Options::default_dirs()?)?;

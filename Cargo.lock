@@ -2066,6 +2066,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "plexus-transcription"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-stream",
+ "async-trait",
+ "bytes",
+ "bzip2 0.4.4",
+ "futures",
+ "hex",
+ "jsonrpsee",
+ "plexus-client",
+ "plexus-core",
+ "plexus-macros",
+ "reqwest",
+ "rubato",
+ "schemars",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "sherpa-onnx",
+ "tar",
+ "tempfile",
+ "tokio",
+ "toml",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
 name = "plexus-transport"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3391,36 +3421,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "transcription"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-stream",
- "async-trait",
- "bytes",
- "bzip2 0.4.4",
- "futures",
- "hex",
- "jsonrpsee",
- "plexus-client",
- "plexus-core",
- "plexus-macros",
- "reqwest",
- "rubato",
- "schemars",
- "serde",
- "serde_json",
- "sha2 0.10.9",
- "sherpa-onnx",
- "tar",
- "tempfile",
- "tokio",
- "toml",
- "tracing",
- "uuid",
-]
-
-[[package]]
 name = "transcription-server"
 version = "0.1.0"
 dependencies = [
@@ -3435,6 +3435,7 @@ dependencies = [
  "plexus-client",
  "plexus-core",
  "plexus-login",
+ "plexus-transcription",
  "plexus-transport",
  "serde",
  "serde_json",
@@ -3444,7 +3445,6 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
- "transcription",
 ]
 
 [[package]]

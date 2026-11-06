@@ -11,7 +11,7 @@ name = "transcription"
 path = "src/main.rs"
 
 [dependencies]
-transcription = { path = ".." }
+transcription = { package = "plexus-transcription", path = ".." }
 plexus-core = "0.8.0"
 plexus-transport = { version = "0.7.0", default-features = false }
 plexus-auth-core = "0.3.0"
