@@ -29,7 +29,6 @@ use crate::audio::Format;
 use crate::catalog::{matches, Family, Kind};
 use crate::download::{download, Step};
 use crate::listen::{listen, Ask, ListenEvent};
-use crate::Transcription;
 
 /// The role every activation here declares: who may listen and read the
 /// models (`admin` may do everything).
@@ -64,20 +63,20 @@ impl TranscriptionActivation {
 
 /// `transcription`'s activation over a [`Transcription`].
 #[derive(Clone)]
-pub struct TranscriptionActivation(pub(crate) Transcription);
+pub struct TranscriptionActivation(pub(crate) crate::Transcription);
 
 impl TranscriptionActivation {
-    pub fn new(t: Transcription) -> Self {
+    pub fn new(t: crate::Transcription) -> Self {
         TranscriptionActivation(t)
     }
 }
 
 /// `listen` alone, for a service whose root holds `models` beside it.
 #[derive(Clone)]
-pub struct SpeechActivation(pub(crate) Transcription);
+pub struct SpeechActivation(pub(crate) crate::Transcription);
 
 impl SpeechActivation {
-    pub fn new(t: Transcription) -> Self {
+    pub fn new(t: crate::Transcription) -> Self {
         SpeechActivation(t)
     }
 }
@@ -186,10 +185,10 @@ client_error!(ListEvent, SearchEvent, DownloadEvent, ConfigEvent);
 /// The models a service has: what is known, what is installed, fetching
 /// one, and the config `listen` runs under.
 #[derive(Clone)]
-pub struct ModelsActivation(pub(crate) Transcription);
+pub struct ModelsActivation(pub(crate) crate::Transcription);
 
 impl ModelsActivation {
-    pub fn new(t: Transcription) -> Self {
+    pub fn new(t: crate::Transcription) -> Self {
         ModelsActivation(t)
     }
 
@@ -311,7 +310,7 @@ const RELEASE_TTL: Duration = Duration::from_secs(600);
 
 pub(crate) type Asset = (String, u64, String);
 
-impl Transcription {
+impl crate::Transcription {
     async fn release_assets(&self) -> Result<Arc<Vec<Asset>>, String> {
         let Some(api) = self.store.opts.release_api.clone() else {
             return Err("the release is not searched here (no release API configured)".into());

@@ -24,15 +24,14 @@ pw-record ─PCM─▶ synapse --input - ═binary frames═▶ speech.listen �
 | `src/config.rs` | `transcription.toml` |
 | `src/store.rs`, `src/download.rs` | the models directory, loaded models, the pool; download/verify/extract |
 | `server/` | **the binary** (`transcription`): the library on a service of its own behind plexus-login |
-| `overlay/plexus-login/` | plexus-login's sources compiled over the 0.8 siblings (manifest only; AGENTS.md says why) |
 | `examples/decode.rs` | a file through the engine directly, with its RTF |
 | `transcription.toml` | the example config |
 
 ## Build
 
-The plexus crates are the unpublished 0.8 line, by sibling path
-(`../plexus-core`, `../plexus-macros`, `../plexus-transport`,
-`../plexus-auth-core`, `../plexus-login`), on their `main`.
+The plexus crates are the 0.8 line, by published version (plexus-core,
+plexus-macros, plexus-client 0.8.0; plexus-transport 0.7.0; plexus-auth-core
+and plexus-login 0.3.0).
 
 ```sh
 cargo build --release -p transcription-server     # target/release/transcription

@@ -12,11 +12,10 @@ path = "src/main.rs"
 
 [dependencies]
 transcription = { path = ".." }
-plexus-core = { path = "../../plexus-core" }
-plexus-transport = { path = "../../plexus-transport", default-features = false }
-plexus-auth-core = { path = "../../plexus-auth-core" }
-# plexus-login's sources over the 0.8 siblings (../overlay/plexus-login/Cargo.toml says why).
-plexus-login = { path = "../overlay/plexus-login" }
+plexus-core = "0.8.0"
+plexus-transport = { version = "0.7.0", default-features = false }
+plexus-auth-core = "0.3.0"
+plexus-login = "0.3.0"
 tokio = { version = "1", features = ["full"] }
 clap = { version = "4", features = ["derive", "env"] }
 anyhow = "1"
@@ -25,7 +24,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 serde_json = "1"
 
 [dev-dependencies]
-plexus-client = { path = "../../plexus-macros/plexus-client", features = ["ws-native"] }
+plexus-client = { version = "0.8.0", features = ["ws-native"] }
 futures = "0.3"
 bytes = "1"
 tempfile = "3"

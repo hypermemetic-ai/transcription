@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "server", "overlay/plexus-login"]
+members = [".", "server"]
 
 [package]
 name = "transcription"
@@ -10,10 +10,10 @@ license = "MIT"
 publish = false
 
 [dependencies]
-# The plexus 0.8 line (unpublished): the sibling checkouts on main, by path.
-plexus-core = { path = "../plexus-core" }
-plexus-macros = { path = "../plexus-macros" }
-plexus-client = { path = "../plexus-macros/plexus-client" }
+# The plexus 0.8 line, by published version.
+plexus-core = "0.8.0"
+plexus-macros = "0.8.0"
+plexus-client = "0.8.0"
 
 # The engine: sherpa-onnx's own Rust API (k2-fsa), its prebuilt static
 # libraries (onnxruntime inside) — no cmake, CPU.
