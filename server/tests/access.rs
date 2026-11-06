@@ -57,7 +57,7 @@ async fn the_roles_are_declared_for_the_gate() {
 #[tokio::test(flavor = "multi_thread")]
 async fn a_host_registers_the_activation_with_its_roles() {
     use futures::StreamExt;
-    use plexus_core::plexus::DynamicHub as DynamicService;
+    use plexus_rpc::core::plexus::DynamicHub as DynamicService;
     let dir = tempfile::tempdir().unwrap();
     let t = transcription::Transcription::open(transcription::Options {
         models_dir: dir.path().join("models"),

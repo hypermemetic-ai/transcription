@@ -32,9 +32,10 @@ servers sets `SYNAPSE_NO_HOLD=1`.
   a host registers it (README "A host service"). `transcription-server`
   (`server/`) is the binary and the only place plexus-login and
   plexus-transport are used. Keep it that way.
-- **The plexus crates are the 0.8 line by published version** (plexus-core,
-  plexus-macros, plexus-client 0.8.0; plexus-transport 0.7.0;
-  plexus-auth-core and plexus-login 0.3.0), so a clone of this repository
+- **The plexus crates are the 0.8 line by published version, through the
+  `plexus-rpc` 0.8 umbrella** (PLEXUS-44: plexus-core, plexus-macros,
+  plexus-client, plexus-auth-core and plexus-transport, and the crates the
+  macro's expansion names; plexus-login 0.3.1 beside it), so a clone of this repository
   alone builds and a host (menger, V2-57) takes it by git revision. Never a
   committed path. plexus-macros 0.8.0 emits a trait named after an
   activation's stem (`transcription` → `Transcription`), so `activation.rs`

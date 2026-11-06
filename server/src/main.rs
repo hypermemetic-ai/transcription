@@ -2,7 +2,7 @@ use std::net::{IpAddr, SocketAddr};
 use std::path::PathBuf;
 
 use clap::Parser;
-use plexus_transport::registry::{self, RegistryRegistration};
+use plexus_rpc::transport::registry::{self, RegistryRegistration};
 use transcription::{Catalog, Options, Transcription};
 use transcription_server::{schema, start, Login, LoginArgs, SERVICE};
 

@@ -3,7 +3,7 @@ members = [".", "server"]
 
 [package]
 name = "plexus-transcription"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Live audio to text with local models, as Plexus activations a service registers: listen (Input<Bytes> in, partial and final text out) and models list/search/download/config"
 license = "MIT"
@@ -13,9 +13,10 @@ categories = ["multimedia::audio"]
 
 [dependencies]
 # The plexus 0.8 line, by published version.
-plexus-core = "0.8.0"
-plexus-macros = "0.8.0"
-plexus-client = "0.8.0"
+# PLEXUS-44: plexus-core, plexus-macros and plexus-client, and every crate
+# the activation macro's expansion names, through the one umbrella.
+# The library serves nothing itself: no transport, plexus-core as before.
+plexus-rpc = { version = "0.8.0", default-features = false, features = ["child-ws"] }
 
 # The engine: sherpa-onnx's own Rust API (k2-fsa), its prebuilt static
 # libraries (onnxruntime inside) — no cmake, CPU.
@@ -23,14 +24,11 @@ sherpa-onnx = "2.0.1"
 # Any rate in, 16 kHz out.
 rubato = "0.16"
 
-# The activation macro's expansion names these directly.
-jsonrpsee = { version = "0.26", features = ["server", "macros"] }
-uuid = { version = "1", features = ["v4", "serde"] }
-
+# The crate's own code uses these (serde and schemars for its own
+# types' derives); the macro's expansion reaches its own through plexus-rpc.
 tokio = { version = "1", features = ["full"] }
 futures = "0.3"
 async-stream = "0.3"
-async-trait = "0.1"
 bytes = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
