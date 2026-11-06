@@ -10,8 +10,8 @@ use std::sync::Arc;
 
 use bytes::Bytes;
 use futures::{Stream, StreamExt};
-use plexus_client::{InputItem, MethodRef, StreamItem, Transport, WsTransport};
-use plexus_core::plexus::AuthContext;
+use plexus_rpc::client::{InputItem, MethodRef, StreamItem, Transport, WsTransport};
+use plexus_rpc::core::plexus::AuthContext;
 use serde_json::{json, Value};
 use transcription::{Catalog, Options, Transcription};
 use transcription_server::{start, Login, LoginArgs, Serving};
@@ -134,7 +134,7 @@ impl Ev {
     }
 }
 
-fn ev(item: Result<StreamItem, plexus_client::TransportError>) -> Option<Ev> {
+fn ev(item: Result<StreamItem, plexus_rpc::client::TransportError>) -> Option<Ev> {
     match item {
         Ok(StreamItem::Data { content, .. }) => Some(Ev::Data(content)),
         Ok(e @ StreamItem::Error { .. }) => Some(Ev::Failed(serde_json::to_value(&e).unwrap())),

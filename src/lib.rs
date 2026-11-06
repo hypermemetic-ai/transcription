@@ -6,7 +6,7 @@
 //! every grant):
 //!
 //! ```no_run
-//! use plexus_core::plexus::DynamicHub as DynamicService;
+//! use plexus_rpc::core::plexus::DynamicHub as DynamicService;
 //! use plexus_transcription::{Options, Transcription, TranscriptionActivation};
 //!
 //! # fn main() -> anyhow::Result<()> {

@@ -16,12 +16,12 @@
 use std::net::SocketAddr;
 use std::sync::Arc;
 
-use plexus_core::plexus::{Activation, DynamicHub as DynamicService, SessionValidator};
+use plexus_rpc::core::plexus::{Activation, DynamicHub as DynamicService, SessionValidator};
 use plexus_login::simple::SimpleAccess;
 use plexus_login::sessions::Sessions;
 use plexus_login::{Branding, LoginOptions, Wired, Wiring};
-use plexus_transport::websocket::serve_websocket_with;
-use plexus_transport::{ServerHandle, UpgradeOptions, WebSocketConfig};
+use plexus_rpc::transport::websocket::serve_websocket_with;
+use plexus_rpc::transport::{ServerHandle, UpgradeOptions, WebSocketConfig};
 use transcription::Transcription;
 
 /// The service's name: what synapse calls the backend.
@@ -119,6 +119,6 @@ pub async fn start(login: &Login, addr: SocketAddr) -> anyhow::Result<Serving> {
 }
 
 /// The schema hash, for the registry.
-pub fn schema(service: &DynamicService) -> plexus_core::plexus::PluginSchema {
+pub fn schema(service: &DynamicService) -> plexus_rpc::core::plexus::PluginSchema {
     Activation::plugin_schema(service)
 }

@@ -21,7 +21,7 @@ use std::time::{Duration, Instant};
 
 use bytes::Bytes;
 use futures::{Stream, StreamExt};
-use plexus_core::plexus::Input;
+use plexus_rpc::core::plexus::Input;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -37,10 +37,10 @@ pub const ROLE: &str = "transcriber";
 // ── listen ───────────────────────────────────────────────────────────────
 
 /// Live audio to text with local models; `models` manages them.
-#[plexus_macros::activation(namespace = "transcription", version = "0.1.0", roles(transcriber = ["listen"]))]
+#[plexus_rpc::macros::activation(namespace = "transcription", version = "0.1.0", roles(transcriber = ["listen"]))]
 impl TranscriptionActivation {
     /// Transcribe audio as it streams in: raw PCM in (binary frames, `--input -`), `partial` and `final` text out on the same call.
-    #[plexus_macros::method(
+    #[plexus_rpc::macros::method(
         input_window = 64,
         params(
             model = "The model (`models list`); default: the config's default_model",
@@ -55,7 +55,7 @@ impl TranscriptionActivation {
     }
 
     /// The models: list, search, download, config.
-    #[plexus_macros::child]
+    #[plexus_rpc::macros::child]
     fn models(&self) -> ModelsActivation {
         ModelsActivation(self.0.clone())
     }
@@ -82,10 +82,10 @@ impl SpeechActivation {
 }
 
 /// Live audio to text with local models.
-#[plexus_macros::activation(namespace = "speech", version = "0.1.0", roles(transcriber = ["listen"]))]
+#[plexus_rpc::macros::activation(namespace = "speech", version = "0.1.0", roles(transcriber = ["listen"]))]
 impl SpeechActivation {
     /// Transcribe audio as it streams in: raw PCM in (binary frames, `--input -`), `partial` and `final` text out on the same call.
-    #[plexus_macros::method(
+    #[plexus_rpc::macros::method(
         input_window = 64,
         params(
             model = "The model (`models list`); default: the config's default_model",
@@ -173,8 +173,8 @@ pub enum ConfigEvent {
 
 macro_rules! client_error {
     ($($t:ty),*) => {$(
-        impl plexus_client::FromClientError for $t {
-            fn from_client_error(error: plexus_client::ClientError) -> Self {
+        impl plexus_rpc::client::FromClientError for $t {
+            fn from_client_error(error: plexus_rpc::client::ClientError) -> Self {
                 Self::Error { message: error.to_string() }
             }
         }
@@ -211,17 +211,17 @@ impl ModelsActivation {
 }
 
 /// Local speech models: list, search, download and configure them.
-#[plexus_macros::activation(namespace = "models", version = "0.1.0", roles(transcriber = ["list", "search"]))]
+#[plexus_rpc::macros::activation(namespace = "models", version = "0.1.0", roles(transcriber = ["list", "search"]))]
 impl ModelsActivation {
     /// Every model the catalog knows, installed or not, and which is the default.
-    #[plexus_macros::method]
+    #[plexus_rpc::macros::method]
     pub async fn list(&self) -> impl Stream<Item = ListEvent> + Send + 'static {
         let items: Vec<ListEvent> = self.0.store.catalog().entries().iter().map(|e| ListEvent::Model(self.info(e))).collect();
         futures::stream::iter(items)
     }
 
     /// Catalog models and sherpa-onnx `asr-models` release assets whose names match the query.
-    #[plexus_macros::method(params(query = "Words to match, e.g. `parakeet` or `zipformer en`"))]
+    #[plexus_rpc::macros::method(params(query = "Words to match, e.g. `parakeet` or `zipformer en`"))]
     pub async fn search(&self, query: String) -> impl Stream<Item = SearchEvent> + Send + 'static {
         let this = self.clone();
         async_stream::stream! {
@@ -249,7 +249,7 @@ impl ModelsActivation {
     }
 
     /// Download a model (and the voice detector, the first time): progress streams, then it is verified, extracted and installed. A cut download resumes.
-    #[plexus_macros::method(params(id = "The model id (`models list`)"))]
+    #[plexus_rpc::macros::method(params(id = "The model id (`models list`)"))]
     pub async fn download(&self, id: String) -> impl Stream<Item = DownloadEvent> + Send + 'static {
         let store = self.0.store.clone();
         async_stream::stream! {
@@ -289,7 +289,7 @@ impl ModelsActivation {
     }
 
     /// Set the config from a TOML file's contents (`--config @transcription.toml`), checked and kept, for the next listen; with no `--config`, show it.
-    #[plexus_macros::method(params(config = "The TOML text; absent: answer the current config"))]
+    #[plexus_rpc::macros::method(params(config = "The TOML text; absent: answer the current config"))]
     pub async fn config(&self, config: Option<String>) -> ConfigEvent {
         let store = &self.0.store;
         let path = store.opts.config_path.as_ref().map(|p| p.display().to_string());

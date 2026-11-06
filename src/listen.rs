@@ -11,7 +11,7 @@ use std::sync::Arc;
 
 use bytes::Bytes;
 use futures::{FutureExt, Stream, StreamExt};
-use plexus_core::plexus::Input;
+use plexus_rpc::core::plexus::Input;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -33,8 +33,8 @@ pub enum ListenEvent {
     Error { message: String },
 }
 
-impl plexus_client::FromClientError for ListenEvent {
-    fn from_client_error(error: plexus_client::ClientError) -> Self {
+impl plexus_rpc::client::FromClientError for ListenEvent {
+    fn from_client_error(error: plexus_rpc::client::ClientError) -> Self {
         ListenEvent::Error { message: error.to_string() }
     }
 }

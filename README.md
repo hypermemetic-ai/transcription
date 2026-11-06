@@ -29,9 +29,9 @@ pw-record ─PCM─▶ synapse --input - ═binary frames═▶ speech.listen �
 
 ## Build
 
-The plexus crates are the 0.8 line, by published version (plexus-core,
-plexus-macros, plexus-client 0.8.0; plexus-transport 0.7.0; plexus-auth-core
-and plexus-login 0.3.0).
+The plexus crates are the 0.8 line, by published version, through one
+dependency: `plexus-rpc` 0.8 (plexus-core, plexus-macros, plexus-client,
+plexus-auth-core, plexus-transport), and plexus-login 0.3.1 for the server.
 
 ```sh
 cargo build --release -p transcription-server     # target/release/transcription
