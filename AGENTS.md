@@ -32,13 +32,13 @@ servers sets `SYNAPSE_NO_HOLD=1`.
   a host registers it (README "A host service"). `transcription-server`
   (`server/`) is the binary and the only place plexus-login and
   plexus-transport are used. Keep it that way.
-- **The plexus crates are the 0.8 line by sibling path**, on `main`; never
-  edit those checkouts from here. plexus-login's `main` pins plexus-core
-  0.7 from crates.io, which a `[patch]` cannot replace with 0.8 (cargo
-  leaves an incompatible version unused), so `overlay/plexus-login` is a
-  manifest that compiles `../plexus-login/src` over the 0.8 siblings. Its
-  dependencies mirror plexus-login's; when plexus-login moves to 0.8,
-  delete the overlay and depend on `../plexus-login`.
+- **The plexus crates are the 0.8 line by published version** (plexus-core,
+  plexus-macros, plexus-client 0.8.0; plexus-transport 0.7.0;
+  plexus-auth-core and plexus-login 0.3.0), so a clone of this repository
+  alone builds and a host (menger, V2-57) takes it by git revision. Never a
+  committed path. plexus-macros 0.8.0 emits a trait named after an
+  activation's stem (`transcription` → `Transcription`), so `activation.rs`
+  names the library's type as `crate::Transcription`.
 - **The engine is behind `engine::Engine`/`Session`.** sherpa-onnx today
   (`engine/sherpa.rs`); a new engine (whisper.cpp, a GPU build —
   TRANSCRIBE-3) implements the two traits and is chosen in `engine::load`.
